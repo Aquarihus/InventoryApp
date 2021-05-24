@@ -23,10 +23,12 @@ class DbHelper : SQLiteOpenHelper {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_TABLE)
+        Log.i("CREATE", "Database created")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, version_old: Int, version_new: Int) {
-        db.execSQL(drop_table)
+        db.execSQL(DROP_TABLE)
+        Log.i("DROP", "Database dropped")
         db.execSQL(CREATE_TABLE)
     }
 
@@ -38,5 +40,5 @@ class DbHelper : SQLiteOpenHelper {
             + COLUMN_EXPIRYDATE + " DATETIME DEFAULT CURRENT_TIMESTAMP"
             + ")")
 
-    private val drop_table = "drop table $TABLE_NAME"
+    private val DROP_TABLE = "drop table $TABLE_NAME";
 }
