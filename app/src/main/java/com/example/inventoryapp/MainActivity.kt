@@ -8,7 +8,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.inventoryapp.database.DbHelper
+import com.example.inventoryapp.database.model.Item
+import com.example.inventoryapp.view.FormsActivity
+import com.example.inventoryapp.view.ItemsAdapter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +27,13 @@ class MainActivity : AppCompatActivity() {
     private var database: SQLiteDatabase? = null
     private var helper: DbHelper? = null
 
+    private var itemAdapter: ItemsAdapter? = null
+    private var itemsList: ArrayList<Item>? = ArrayList<Item>()
+
     private var button: Button? = null
+
+    private var recyclerView: RecyclerView? = null
+    private var noItemsView:TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,13 +42,23 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize db
         helper = DbHelper(this)
-        database = helper!!.getWritableDatabase()
+        database = helper!!.writableDatabase
 
         // Initialize Button
         button = findViewById(R.id.Add)
         button!!.setOnClickListener {
             Log.i("DIM", "Button is clicked")
         }
+
+        recyclerView = findViewById(R.id.recycler_view)
+        noItemsView = findViewById(R.id.empty_items_view)
+
+        itemAdapter = ItemsAdapter(this, itemsList)
+        var layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
+        recyclerView!!.setLayoutManager(layoutManager)
+        recyclerView!!.setItemAnimator(DefaultItemAnimator())
+        //recyclerView!!.addItemDecoration(My)
+        recyclerView!!.setAdapter(itemAdapter)
 
         // insertItem("12345678912345", "Danette", 11022020)
         // getItem("12345678912345")
@@ -72,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("DIM", "onRestoreInstanceState")
     }
 
-    private fun getItem(gtin: String) : Item? {
+    public fun getItem(gtin: String) : Item? {
 
         var column = arrayOf(helper!!.COLUMN_ID, helper!!.COLUMN_GTIN, helper!!.COLUMN_NAME, helper!!.COLUMN_EXPIRYDATE)
         var where = helper!!.COLUMN_GTIN + "=?"
@@ -106,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         return item
     }
 
-    private fun getAllItems(): List<Item>? {
+    public fun getAllItems(): ArrayList<Item>? {
         var items = ArrayList<Item>()
 
         var column = arrayOf(helper!!.COLUMN_ID, helper!!.COLUMN_GTIN, helper!!.COLUMN_NAME, helper!!.COLUMN_EXPIRYDATE)
@@ -116,7 +143,6 @@ class MainActivity : AppCompatActivity() {
         if (cursor == null)
         {
             Log.i("DIM", "Failed to retrieve items")
-
             return null
         }
 
@@ -152,7 +178,7 @@ class MainActivity : AppCompatActivity() {
         return items;
     }
 
-    private fun insertItem(gtin: String, name: String, expiryDate: Int)
+    public fun insertItem(gtin: String, name: String, expiryDate: Int)
     {
         var value = ContentValues()
 
@@ -166,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun updateTable(gtin: String, expiryDate: Int)
+    public fun updateTable(gtin: String, expiryDate: Int)
     {
         var value = ContentValues()
         value.put(helper!!.COLUMN_EXPIRYDATE, expiryDate)
@@ -191,12 +217,46 @@ class MainActivity : AppCompatActivity() {
         database!!.close()
     }
 
+    /**
+     * Inserting new item in db
+     * and refreshing the list
+     */
+    private fun createNote(gtin: String, name: String, expiryDate: Int) {
+
+        // inserting item in db
+        insertItem(gtin, name, expiryDate)
+
+        // get the newly inserted note from db
+        val item: Item? = getItem(gtin)
+        if (item != null) {
+            // adding new note to array list at 0 position
+            itemsList!!.add(0, item)
+        }
+        else
+        {
+            updateTable(gtin, expiryDate)
+        }
+
+        // refreshing the list
+        itemAdapter!!.notifyDataSetChanged()
+    }
+
     public fun openForms(view: View) {
         Log.i("DIM", "Forms is open")
 
         var intent: Intent = Intent(this, FormsActivity::class.java)
-        intent.putExtra("key", "test");
-        startActivity(intent)
+        intent.putExtra("test", "test");
+        startActivityForResult(intent, 0)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Toast.makeText(this, "Data submitted", Toast.LENGTH_SHORT).show();
+
+        //Retrieve data in the intent
+        var editTextValue = intent.getStringExtra("test")
+    }
+
+
 
 }

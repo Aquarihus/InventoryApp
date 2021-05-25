@@ -8,18 +8,20 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="68dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/GTIN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gtin"
+                android:text="@string/editTextGtin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 tools:ignore="MissingConstraints" />
 
@@ -34,7 +36,7 @@
                 android:id="@+id/Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
+                android:text="@string/editTextName"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <EditText
@@ -48,7 +50,7 @@
                 android:id="@+id/ExpiryDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/expiry_date"
+                android:text="@string/editTextExpiry_date"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <EditText
@@ -63,8 +65,8 @@
                 android:id="@+id/updateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/update"
-                android:onClick="Update"/>
+                android:onClick="submit"
+                android:text="@string/submit" />
         </LinearLayout>
     </ScrollView>
 

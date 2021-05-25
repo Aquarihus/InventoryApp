@@ -1,4 +1,4 @@
-package com.example.inventoryapp
+package com.example.inventoryapp.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -41,4 +41,6 @@ class DbHelper : SQLiteOpenHelper {
             + ")")
 
     private val DROP_TABLE = "drop table $TABLE_NAME";
+
+
 }

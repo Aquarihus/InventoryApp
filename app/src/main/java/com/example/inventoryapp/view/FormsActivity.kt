@@ -1,4 +1,4 @@
-package com.example.inventoryapp
+package com.example.inventoryapp.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.inventoryapp.MainActivity
+import com.example.inventoryapp.R
 
 class FormsActivity : AppCompatActivity() {
 
@@ -24,17 +27,15 @@ class FormsActivity : AppCompatActivity() {
 
         // Initialize Button
         button = findViewById(R.id.updateButton)
-        button!!.setOnClickListener() {
-            Log.i("DIM", "Button is clicked")
-        }
 
     }
 
-    public fun Update(view: View) {
-        Log.i("DIM", "Forms is open")
+    public fun submit(view: View) {
 
-        var intent: Intent = Intent(this, FormsActivity::class.java)
-        startActivity(intent)
+
+        var intent: Intent = Intent()
+        intent.putExtra("test", "test")
+        setResult(1, intent)
 
         // Edit Text
         editGtin = findViewById(R.id.InsertGtin)
@@ -48,5 +49,8 @@ class FormsActivity : AppCompatActivity() {
         editDate = findViewById(R.id.EditDate)
         var dateText = editDate!!.getText().toString()
         Log.i("DIM", "Insert Text, value = $dateText")
+
+        Log.i("DIM", "Button clicked")
+        finish()
     }
 }
