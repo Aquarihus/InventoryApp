@@ -1,6 +1,8 @@
 package com.example.inventoryapp.database.model
 
-class Item(val id: Int, val gtin: String, val name: String, val expiryDate: String) {
+import java.io.Serializable
+
+class Item(val id: Int, val gtin: String, val name: String, val expiryDate: String): Serializable {
 
     // One item in the inventory
 

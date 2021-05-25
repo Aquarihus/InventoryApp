@@ -1,15 +1,20 @@
 package com.example.inventoryapp
 
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var noItemsView:TextView? = null
 
+    private var item: Item? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -46,19 +53,18 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize Button
         button = findViewById(R.id.Add)
-        button!!.setOnClickListener {
-            Log.i("DIM", "Button is clicked")
-        }
 
         recyclerView = findViewById(R.id.recycler_view)
         noItemsView = findViewById(R.id.empty_items_view)
 
         itemAdapter = ItemsAdapter(this, itemsList)
-        var layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        recyclerView!!.setLayoutManager(layoutManager)
-        recyclerView!!.setItemAnimator(DefaultItemAnimator())
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
+        recyclerView!!.layoutManager = layoutManager
+        recyclerView!!.itemAnimator = DefaultItemAnimator()
         //recyclerView!!.addItemDecoration(My)
-        recyclerView!!.setAdapter(itemAdapter)
+        recyclerView!!.adapter = itemAdapter
+
+        toggleEmptyItems()
 
         // insertItem("12345678912345", "Danette", 11022020)
         // getItem("12345678912345")
@@ -118,19 +124,19 @@ class MainActivity : AppCompatActivity() {
         cursor.moveToFirst()
 
         // prepare item object
-        var item = Item(
+        var items = Item(
                 cursor.getInt(cursor.getColumnIndex(helper!!.COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(helper!!.COLUMN_GTIN)),
                 cursor.getString(cursor.getColumnIndex(helper!!.COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(helper!!.COLUMN_EXPIRYDATE))
         )
 
-        Log.i("DIM", "Get item$item")
+        Log.i("DIM", "Get item $items")
 
         // close the db connection
         cursor.close()
 
-        return item
+        return items
     }
 
     public fun getAllItems(): ArrayList<Item>? {
@@ -178,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         return items;
     }
 
-    public fun insertItem(gtin: String, name: String, expiryDate: Int)
+    public fun insertItem(gtin: String, name: String, expiryDate: String)
     {
         var value = ContentValues()
 
@@ -192,7 +198,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    public fun updateTable(gtin: String, expiryDate: Int)
+    public fun updateTable(gtin: String, expiryDate: String)
     {
         var value = ContentValues()
         value.put(helper!!.COLUMN_EXPIRYDATE, expiryDate)
@@ -217,20 +223,50 @@ class MainActivity : AppCompatActivity() {
         database!!.close()
     }
 
+    public fun getItemCount(): Int
+    {
+        var column = arrayOf(helper!!.COLUMN_ID, helper!!.COLUMN_GTIN, helper!!.COLUMN_NAME, helper!!.COLUMN_EXPIRYDATE)
+
+        var cursor: Cursor? = database!!.query(helper!!.TABLE_NAME, column, null, null, null, null, null)
+
+        if (cursor == null)
+        {
+            Log.i("DIM", "Failed to retrieve items")
+            return 0
+        }
+
+        var count = cursor.count
+        cursor.close()
+        return count
+    }
+
+    private fun toggleEmptyItems() {
+
+        Log.i("DIM", "toggleEmptyItems " + getItemCount())
+
+        if (getItemCount() > 0) {
+                noItemsView!!.visibility = View.GONE;
+        } else {
+            noItemsView!!.visibility = View.VISIBLE;
+        }
+    }
+
     /**
      * Inserting new item in db
      * and refreshing the list
      */
-    private fun createNote(gtin: String, name: String, expiryDate: Int) {
+    private fun createItem(gtin: String, name: String, expiryDate: String) {
+
+        Log.i("DIM", "createItem")
 
         // inserting item in db
         insertItem(gtin, name, expiryDate)
 
         // get the newly inserted note from db
-        val item: Item? = getItem(gtin)
-        if (item != null) {
+        val newItem: Item? = getItem(gtin)
+        if (newItem != null) {
             // adding new note to array list at 0 position
-            itemsList!!.add(0, item)
+            itemsList!!.add(0, newItem)
         }
         else
         {
@@ -239,24 +275,39 @@ class MainActivity : AppCompatActivity() {
 
         // refreshing the list
         itemAdapter!!.notifyDataSetChanged()
+
+        toggleEmptyItems()
     }
 
     public fun openForms(view: View) {
-        Log.i("DIM", "Forms is open")
+        Log.i("DIM", "Open forms")
+        intent = Intent(baseContext, FormsActivity::class.java)
+        item= intent.getSerializableExtra("item") as Item?
 
-        var intent: Intent = Intent(this, FormsActivity::class.java)
-        intent.putExtra("test", "test");
+        intent.putExtra("item", -1)
         startActivityForResult(intent, 0)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        Log.i("DIM", "onActivityResult ")
+
+        if (requestCode == 0)
+        {
+            Log.i("DIM", "Request 0")
+
+            var itemContent: java.util.ArrayList<String>? = data!!.getStringArrayListExtra("itemContent")
+            Log.i("DIM", "itemContent $itemContent")
+
+            createItem(itemContent!![0], itemContent[1], itemContent[2])
+            Toast.makeText(this, "Data submitted", Toast.LENGTH_SHORT).show();
+
+            // refreshing the list
+            itemAdapter!!.notifyDataSetChanged()
+        }
+
         super.onActivityResult(requestCode, resultCode, data)
-        Toast.makeText(this, "Data submitted", Toast.LENGTH_SHORT).show();
 
-        //Retrieve data in the intent
-        var editTextValue = intent.getStringExtra("test")
     }
-
-
 
 }
