@@ -13,8 +13,8 @@ import com.example.inventoryapp.database.model.Item
 
 public class ItemsAdapter(context: Context?, itemsList: ArrayList<Item>?): RecyclerView.Adapter<ItemsAdapter.MyViewHolder>() {
 
-    private var context: Context? = null
-    private var itemsList: ArrayList<Item>? = null
+    private var context: Context? = context
+    private var itemsList: ArrayList<Item>? = itemsList
 
     public class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var gtin: TextView = view.findViewById(R.id.gtin)
@@ -24,6 +24,9 @@ public class ItemsAdapter(context: Context?, itemsList: ArrayList<Item>?): Recyc
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+
+        Log.i("DIM", "onCreateViewHolder")
+
         val itemView: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_list_row, parent, false)
         return MyViewHolder(itemView)

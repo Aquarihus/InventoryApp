@@ -23,7 +23,7 @@ class FormsActivity : AppCompatActivity() {
     var editName: EditText? = null
     var editDate: EditText? = null
 
-        override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forms)
         Log.i("DIM", "onCreate Forms")
