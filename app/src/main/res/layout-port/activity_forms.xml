@@ -4,78 +4,158 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/custom_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:text="@string/form"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:paddingLeft= "16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
         tools:layout_editor_absoluteX="-16dp"
         tools:layout_editor_absoluteY="68dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="25dp"
                 android:text="@string/title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textSize="20sp"
                 tools:ignore="MissingConstraints" />
 
-            <TextView
-                android:id="@+id/GTIN"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/editTextGtin"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                tools:ignore="MissingConstraints" />
+                android:layout_below="@id/title"
+                android:id="@id/GTIN">
 
-            <EditText
-                android:id="@+id/InsertGtin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number|textPersonName" />
+                <TextView
+                    android:id="@+id/GTIN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/insert_gtin"
+                    android:textSize="16sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <TextView
-                android:id="@+id/Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/editTextName"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <EditText
+                    android:id="@+id/InsertGtin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="51dp"
+                    android:ems="10"
+                    android:inputType="number|textPersonName" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/InsertName"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName" />
+                android:layout_below="@id/GTIN"
+                android:id="@id/Name">
 
-            <TextView
-                android:id="@+id/ExpiryDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/editTextExpiry_date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <TextView
+                    android:id="@+id/Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/insert_name"
+                    android:textSize="16sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <EditText
-                android:id="@+id/EditDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="date"
-                android:onClick="Update" />
+                <EditText
+                    android:id="@+id/InsertName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/updateButton"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Name"
+                android:id="@id/ExpiryDate">
+
+                <TextView
+                    android:id="@+id/ExpiryDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/insert_new_date"
+                    android:layout_gravity="bottom"
+                    android:textSize="16sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+                <EditText
+                    android:id="@+id/EditDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="9dp"
+                    android:ems="10"
+                    android:inputType="date"
+                    android:onClick="submit" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="submit"
-                android:text="@string/submit" />
-        </LinearLayout>
+                android:layout_below="@id/ExpiryDate"
+                android:layout_marginTop="25dp"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/button_layout">
+
+                <Button
+                    android:id="@+id/updateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:onClick="submit"
+                    android:background="@color/primary"
+                    android:text="@string/submit" />
+
+                <Button
+                    android:id="@+id/cancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:onClick="cancel"
+                    android:background="@color/primary"
+                    android:text="@string/cancel" />
+
+            </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

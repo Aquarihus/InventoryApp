@@ -85,4 +85,10 @@ class FormsActivity : AppCompatActivity() {
 
         finish()
     }
+
+    fun cancel(view: View) {
+        Log.i("DIM", "Cancel forms")
+
+        finish()
+    }
 }

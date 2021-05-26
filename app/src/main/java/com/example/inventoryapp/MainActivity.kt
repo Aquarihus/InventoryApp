@@ -1,20 +1,16 @@
 package com.example.inventoryapp
 
-import android.R.id
 import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.inventoryapp.database.DbHelper
@@ -30,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     private var helper: DbHelper? = null
 
     private var appLayout: LinearLayout? = null
+    var height = 0
+    var width = 0
+
 
     private var itemsList: ArrayList<Item>? = ArrayList<Item>()
 
@@ -50,6 +49,13 @@ class MainActivity : AppCompatActivity() {
         // Initialize Button | layout
         button = findViewById(R.id.Add)
         appLayout = findViewById(R.id.layouuut)
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        height = displayMetrics.heightPixels
+        width = displayMetrics.widthPixels
+        findViewById<View>(R.id.layouuut).layoutParams.height = height - 300
+
 
         refresh()
 
@@ -204,33 +210,36 @@ class MainActivity : AppCompatActivity() {
         Log.i("DIM", "createItem")
 
         val linLay = LinearLayout(this@MainActivity)
+        linLay.orientation = LinearLayout.VERTICAL
 
         val newName = TextView(this@MainActivity)
-        newName.text = "$name "
+        newName.text = "\n$name"
         newName.textSize = 17f
         newName.setTextColor(-0x1000000)
         newName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
         val newGtin = TextView(this@MainActivity)
-        newGtin.text = "$gtin "
+        newGtin.text = "$gtin"
         newGtin.textSize = 17f
         newGtin.setTextColor(-0x1000000)
 
-
         val newDate = TextView(this@MainActivity)
-        newDate.text = "$expiryDate "
+        newDate.text = "$expiryDate\n"
         newDate.textSize = 17f
         newDate.setTextColor(-0x1000000)
-
 
         linLay.addView(newName)
         linLay.addView(newGtin)
         linLay.addView(newDate)
+        linLay.gravity = Gravity.START
+
         appLayout!!.addView(linLay)
 
-        linLay.gravity = Gravity.CENTER
-
-        Log.i("DEBUG:", "New contact with id")
+        val line = View(this@MainActivity)
+        appLayout!!.addView(line)
+        line.layoutParams.width = width
+        line.layoutParams.height = 1
+        line.setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.black))
 
     }
 
@@ -267,7 +276,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("DIM", "onActivityResult ")
 
-        if (requestCode == 0)
+        if (resultCode == RESULT_OK && requestCode == 0)
         {
             Log.i("DIM", "Request 0")
 
