@@ -1,0 +1,10 @@
+Start the application in Android Studio.
+
+To add a new item in the inventory, click on the "Add" button.
+In the form, enter the GTIN, the name (optional) and the expiry date of the item you want to add.
+
+To modify the expiry date of an already existing item, click on the "Add" button.
+In the form, enter the GTIN, the name (optional) and the new expiry date.
+
+Click on the "Submit" button to send the form.
+Click on the "Cancel" button if you don't want to add anything.
