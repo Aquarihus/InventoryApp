@@ -15,5 +15,6 @@
     <string name="title">Add new item</string>
     <string name="form">Form</string>
     <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
 
 </resources>

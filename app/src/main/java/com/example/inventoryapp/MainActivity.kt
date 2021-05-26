@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var itemsList: ArrayList<Item>? = ArrayList<Item>()
 
     private var button: Button? = null
-
+    private var reset: Button? = null
 
     private var item: Item? = null
 
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize Button | layout
         button = findViewById(R.id.Add)
+        reset = findViewById(R.id.Reset)
         appLayout = findViewById(R.id.layouuut)
 
         val displayMetrics = DisplayMetrics()
@@ -292,6 +293,15 @@ class MainActivity : AppCompatActivity() {
 
         super.onActivityResult(requestCode, resultCode, data)
 
+    }
+
+    public fun reset(view: View)
+    {
+        Log.i("DIM", "Reset")
+        database?.delete(helper!!.TABLE_NAME, null, null)
+
+        database = helper!!.writableDatabase
+        refresh()
     }
 
 }
